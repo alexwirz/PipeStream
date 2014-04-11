@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Pipe
 {
@@ -66,7 +67,7 @@ namespace Pipe
 
 		public override long Length {
 			get {
-				throw new NotImplementedException ();
+				return _buffer.Count ();
 			}
 		}
 

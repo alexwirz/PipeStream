@@ -47,6 +47,22 @@ namespace Pipe.Tests
 			pipeStream.Read (readBuffer, 0, readBuffer.Length);
 			CollectionAssert.AreEqual (expectedResult, readBuffer);
 		}
+
+		[Test]
+		public void LengthReturnsZeroForEmptyStream ()
+		{
+			var pipeSteam = new PipeStream ();
+			Assert.AreEqual (0, pipeSteam.Length);
+		}
+
+		[Test]
+		public void LengthReturnsTheNumberOfBytesCanBeReadFromTheStream ()
+		{
+			var buffer = new byte [] { 1 };
+			var pipeStream = new PipeStream ();
+			pipeStream.Write (buffer, 0, buffer.Length);
+			Assert.AreEqual (buffer.Length, pipeStream.Length);
+		}
 	}
 }
 
