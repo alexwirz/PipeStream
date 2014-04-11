@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pipe", "Pipe\Pipe.csproj", "{1891628F-95E1-4E8B-B553-14E8BD235D9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pipe.Tests", "Pipe.Tests\Pipe.Tests.csproj", "{452A52E7-D6A8-4A4D-9740-A69083B0FCB2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1891628F-95E1-4E8B-B553-14E8BD235D9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1891628F-95E1-4E8B-B553-14E8BD235D9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1891628F-95E1-4E8B-B553-14E8BD235D9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1891628F-95E1-4E8B-B553-14E8BD235D9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{452A52E7-D6A8-4A4D-9740-A69083B0FCB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{452A52E7-D6A8-4A4D-9740-A69083B0FCB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{452A52E7-D6A8-4A4D-9740-A69083B0FCB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{452A52E7-D6A8-4A4D-9740-A69083B0FCB2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Pipe\Pipe.csproj
+	EndGlobalSection
+EndGlobal
