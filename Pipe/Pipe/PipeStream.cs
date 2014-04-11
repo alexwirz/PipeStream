@@ -2,12 +2,13 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Concurrent;
 
 namespace Pipe
 {
 	public class PipeStream : Stream
 	{
-		private readonly List<byte> _buffer = new List<byte> (); 
+		private readonly BlockingCollection<byte> _buffer = new BlockingCollection<byte> (); 
 
 		public PipeStream ()
 		{
@@ -24,8 +25,7 @@ namespace Pipe
 		{
 			var bytesRead = 0;
 			for (var bytesCount = offset; bytesCount < offset + count; ++bytesCount) {
-				buffer [bytesCount] = _buffer [0];
-				_buffer.RemoveAt (0);
+				buffer [bytesCount] = _buffer.Take ();
 				++bytesRead;
 			}
 
@@ -44,7 +44,9 @@ namespace Pipe
 
 		public override void Write (byte[] buffer, int offset, int count)
 		{
-			_buffer.AddRange (buffer);
+			foreach (byte item in buffer) {
+				_buffer.Add (item);
+			}
 		}
 
 		public override bool CanRead {

@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Pipe.Tests
 {
@@ -62,6 +63,20 @@ namespace Pipe.Tests
 			var pipeStream = new PipeStream ();
 			pipeStream.Write (buffer, 0, buffer.Length);
 			Assert.AreEqual (buffer.Length, pipeStream.Length);
+		}
+
+		[Test]
+		public void ReadBlocksUntilEnoughBytesWrittenToStream ()
+		{
+			var buffer = new byte [] { 1, 1, 2, 3, 5, 8, 13, 21 };
+			var readBuffer = new byte [buffer.Length];
+			var pipeStream = new PipeStream ();
+			var readTask = Task.Run (() => pipeStream.Read (readBuffer, 0, buffer.Length));
+			Task.Delay (100);
+			pipeStream.Write (buffer, 0, buffer.Length);
+			var taskFinished = readTask.Wait (TimeSpan.FromSeconds (1));
+			Assert.IsTrue (taskFinished);
+			CollectionAssert.AreEquivalent (buffer, readBuffer);
 		}
 	}
 }
