@@ -78,6 +78,25 @@ namespace Pipe.Tests
 			Assert.IsTrue (taskFinished);
 			CollectionAssert.AreEquivalent (buffer, readBuffer);
 		}
+
+		[Test]
+		public void FlushUnblocksRead ()
+		{
+			var buffer = new byte [] { 1, 2, 3 };
+			var readBuffer = new byte [buffer.Length * 2];
+			var bytesRead = 0;
+			var pipeStream = new PipeStream ();
+			var readTask = Task.Run (() => bytesRead = pipeStream.Read (readBuffer, 0, readBuffer.Length));
+			Task.Delay (100);
+			pipeStream.Write (buffer, 0, buffer.Length);
+			pipeStream.Flush ();
+			var taskFinished = readTask.Wait (TimeSpan.FromSeconds (1));
+			Assert.IsTrue (taskFinished);
+			Assert.AreEqual (buffer.Length, bytesRead);
+			var readData = new byte [bytesRead];
+			Array.Copy (readBuffer, readData, bytesRead);
+			CollectionAssert.AreEquivalent (readData, buffer);
+		}
 	}
 }
 

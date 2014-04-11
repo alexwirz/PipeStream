@@ -3,11 +3,13 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections.Concurrent;
+using System.Threading;
 
 namespace Pipe
 {
 	public class PipeStream : Stream
 	{
+		private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource ();
 		private readonly BlockingCollection<byte> _buffer = new BlockingCollection<byte> (); 
 
 		public PipeStream ()
@@ -18,16 +20,20 @@ namespace Pipe
 
 		public override void Flush ()
 		{
-			throw new NotImplementedException ();
+			_cancellationTokenSource.Cancel ();
+			_buffer.CompleteAdding ();
 		}
 
 		public override int Read (byte[] buffer, int offset, int count)
 		{
 			var bytesRead = 0;
-			for (var bytesCount = offset; bytesCount < offset + count; ++bytesCount) {
-				buffer [bytesCount] = _buffer.Take ();
-				++bytesRead;
-			}
+
+			try {
+				for (var bytesCount = offset; bytesCount < offset + count; ++bytesCount) {
+					buffer [bytesCount] = _buffer.Take (_cancellationTokenSource.Token);
+					++bytesRead;
+				}
+			} catch (OperationCanceledException) { }
 
 			return bytesRead;
 		}
