@@ -104,6 +104,16 @@ namespace Pipe.Tests
 			var pipeStream = new PipeStream ();
 			Assert.IsFalse (pipeStream.CanSeek);
 		}
+
+		[Test]
+		public void WriteTakesBytesFromTheGivenOffset ()
+		{
+			var buffer = new byte [] { 1, 2 };
+			var pipeStream = new PipeStream ();
+			var offset = buffer.Length / 2;
+			pipeStream.Write (buffer, offset, buffer.Length - offset);
+			Assert.AreEqual (buffer.Length - offset, pipeStream.Length);
+		}
 	}
 }
 

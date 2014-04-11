@@ -50,8 +50,8 @@ namespace Pipe
 
 		public override void Write (byte[] buffer, int offset, int count)
 		{
-			foreach (byte item in buffer) {
-				_buffer.Add (item);
+			for (var index = offset; index < (offset + count); ++index) {
+				_buffer.Add (buffer [index]);
 			}
 		}
 
