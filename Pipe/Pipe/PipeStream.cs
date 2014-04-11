@@ -63,7 +63,7 @@ namespace Pipe
 
 		public override bool CanSeek {
 			get {
-				throw new NotImplementedException ();
+				return false;
 			}
 		}
 

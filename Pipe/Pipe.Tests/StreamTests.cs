@@ -97,6 +97,13 @@ namespace Pipe.Tests
 			Array.Copy (readBuffer, readData, bytesRead);
 			CollectionAssert.AreEquivalent (readData, buffer);
 		}
+
+		[Test]
+		public void NoSeekAllowed ()
+		{
+			var pipeStream = new PipeStream ();
+			Assert.IsFalse (pipeStream.CanSeek);
+		}
 	}
 }
 
