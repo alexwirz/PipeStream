@@ -1,10 +1,13 @@
 ﻿using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace Pipe
 {
 	public class PipeStream : Stream
 	{
+		private readonly List<byte> _buffer = new List<byte> (); 
+
 		public PipeStream ()
 		{
 		}
@@ -18,7 +21,14 @@ namespace Pipe
 
 		public override int Read (byte[] buffer, int offset, int count)
 		{
-			throw new NotImplementedException ();
+			var bytesRead = 0;
+			for (var bytesCount = offset; bytesCount < offset + count; ++bytesCount) {
+				buffer [bytesCount] = _buffer [0];
+				_buffer.RemoveAt (0);
+				++bytesRead;
+			}
+
+			return bytesRead;
 		}
 
 		public override long Seek (long offset, SeekOrigin origin)
@@ -33,12 +43,12 @@ namespace Pipe
 
 		public override void Write (byte[] buffer, int offset, int count)
 		{
-			throw new NotImplementedException ();
+			_buffer.AddRange (buffer);
 		}
 
 		public override bool CanRead {
 			get {
-				throw new NotImplementedException ();
+				return true;
 			}
 		}
 
