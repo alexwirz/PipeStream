@@ -29,8 +29,8 @@ namespace Pipe
 			var bytesRead = 0;
 
 			try {
-				for (var bytesCount = offset; bytesCount < offset + count; ++bytesCount) {
-					buffer [bytesCount] = _buffer.Take (_cancellationTokenSource.Token);
+				for (var index = offset; index < offset + count; ++index) {
+					buffer [index] = _buffer.Take (_cancellationTokenSource.Token);
 					++bytesRead;
 				}
 			} catch (OperationCanceledException) { }
