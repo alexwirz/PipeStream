@@ -221,6 +221,17 @@ namespace Pipe.Tests
 			var pipeStream = new PipeStream ();
 			pipeStream.Write (new byte[2] {1, 2}, 0, 3);
 		}
+
+
+		[Test]
+		public void ReadReturnsNumberOfBytesReadAfterFlush ()
+		{
+			var pipeStream = new PipeStream ();
+			pipeStream.Write (new byte[2] {1, 2}, 0, 2);
+			pipeStream.Flush ();
+			var bytesRead = pipeStream.Read (new byte [3], 0, 3);
+			Assert.AreEqual (2, bytesRead);
+		}
 	}
 }
 

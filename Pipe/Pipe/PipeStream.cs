@@ -26,7 +26,7 @@ namespace Pipe
 			var haveMoreBytes = true;
 			for (var index = offset; (index < offset + count) && haveMoreBytes; ++index) {
 				haveMoreBytes = TryReadNextByteIntoBuffer (buffer, index);
-				++bytesRead;
+				if (haveMoreBytes) ++bytesRead;
 			}
 
 			return bytesRead;
