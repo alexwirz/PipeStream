@@ -262,6 +262,14 @@ namespace Pipe.Tests
 			pipeStream.Dispose ();
 			pipeStream.Write (new byte[] { 1, 2 }, 0, 2);
 		}
+
+		[Test]
+		public void CanFlushStreamMultipleTimes ()
+		{
+			var pipeStream = new PipeStream ();
+			pipeStream.Flush ();
+			pipeStream.Flush ();
+		}
 	}
 }
 
