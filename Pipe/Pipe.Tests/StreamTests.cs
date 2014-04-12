@@ -232,6 +232,36 @@ namespace Pipe.Tests
 			var bytesRead = pipeStream.Read (new byte [3], 0, 3);
 			Assert.AreEqual (2, bytesRead);
 		}
+
+		[Test]
+		public void CanReadStreamToEndAfterItWasClosed ()
+		{
+			var pipeStream = new PipeStream ();
+			var buffer = new byte[2] { 1, 2 };
+			pipeStream.Write (buffer, 0, buffer.Length);
+			pipeStream.Close ();
+			var readBuffer = new byte [buffer.Length];
+			pipeStream.Read (readBuffer, 0, readBuffer.Length);
+			CollectionAssert.AreEquivalent (buffer, readBuffer);
+		}
+
+		[Test]
+		[ExpectedException(typeof(InvalidOperationException))]
+		public void CannotWriteToClosedStream ()
+		{
+			var pipeStream = new PipeStream ();
+			pipeStream.Close ();
+			pipeStream.Write (new byte[] { 1, 2 }, 0, 2);
+		}
+
+		[Test]
+		[ExpectedException(typeof(InvalidOperationException))]
+		public void CannotWriteToDisposedStream ()
+		{
+			var pipeStream = new PipeStream ();
+			pipeStream.Dispose ();
+			pipeStream.Write (new byte[] { 1, 2 }, 0, 2);
+		}
 	}
 }
 

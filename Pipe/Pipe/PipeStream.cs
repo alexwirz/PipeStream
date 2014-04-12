@@ -13,6 +13,12 @@ namespace Pipe
 
 		#region implemented abstract members of Stream
 
+		public override void Close ()
+		{
+			Flush ();
+			base.Close ();
+		}
+
 		public override void Flush ()
 		{
 			_buffer.CompleteAdding ();
