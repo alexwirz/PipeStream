@@ -83,7 +83,7 @@ namespace Pipe.Tests
 		public void FlushUnblocksRead ()
 		{
 			var buffer = new byte [] { 1, 2, 3 };
-			var readBuffer = new byte [buffer.Length * 2];
+			var readBuffer = new byte [buffer.Length];
 			var bytesRead = 0;
 			var pipeStream = new PipeStream ();
 			var readTask = Task.Run (() => bytesRead = pipeStream.Read (readBuffer, 0, readBuffer.Length));
@@ -93,9 +93,7 @@ namespace Pipe.Tests
 			var taskFinished = readTask.Wait (TimeSpan.FromSeconds (1));
 			Assert.IsTrue (taskFinished);
 			Assert.AreEqual (buffer.Length, bytesRead);
-			var readData = new byte [bytesRead];
-			Array.Copy (readBuffer, readData, bytesRead);
-			CollectionAssert.AreEquivalent (readData, buffer);
+			CollectionAssert.AreEquivalent (readBuffer, buffer);
 		}
 
 		[Test]
@@ -113,6 +111,19 @@ namespace Pipe.Tests
 			var offset = buffer.Length / 2;
 			pipeStream.Write (buffer, offset, buffer.Length - offset);
 			Assert.AreEqual (buffer.Length - offset, pipeStream.Length);
+		}
+
+		[Test]
+		public void CanReadToEndAfterFlush ()
+		{
+			var buffer = new byte [] { 1, 1, 2, 3, 5, 8, 13, 21 };
+			var pipeStream = new PipeStream ();
+			pipeStream.Write (buffer, 0, buffer.Length);
+			pipeStream.Flush ();
+			var readBuffer = new byte[buffer.Length];
+			var bytesRead = pipeStream.Read (readBuffer, 0, readBuffer.Length);
+			Assert.AreEqual (buffer.Length, bytesRead);
+			CollectionAssert.AreEqual (buffer, readBuffer);
 		}
 	}
 }

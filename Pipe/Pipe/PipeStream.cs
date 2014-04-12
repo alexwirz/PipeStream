@@ -9,7 +9,6 @@ namespace Pipe
 {
 	public class PipeStream : Stream
 	{
-		private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource ();
 		private readonly BlockingCollection<byte> _buffer = new BlockingCollection<byte> (); 
 
 		public PipeStream ()
@@ -20,20 +19,27 @@ namespace Pipe
 
 		public override void Flush ()
 		{
-			_cancellationTokenSource.Cancel ();
 			_buffer.CompleteAdding ();
 		}
 
 		public override int Read (byte[] buffer, int offset, int count)
 		{
 			var bytesRead = 0;
+			bool taken;
 
-			try {
-				for (var index = offset; index < offset + count; ++index) {
-					buffer [index] = _buffer.Take (_cancellationTokenSource.Token);
-					++bytesRead;
+			for (var index = offset; index < offset + count; ++index) {
+				taken = false;
+				while (!taken) {
+					taken = _buffer.TryTake (out buffer [index]);
+					if (taken) {
+						++bytesRead;
+					}
+
+					if (!taken && _buffer.IsCompleted) {
+						return bytesRead;
+					}
 				}
-			} catch (OperationCanceledException) { }
+			}
 
 			return bytesRead;
 		}
