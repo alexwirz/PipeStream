@@ -24,6 +24,14 @@ namespace Pipe
 
 		public override int Read (byte[] buffer, int offset, int count)
 		{
+			if ((offset < 0) || (offset >= buffer.Length)) {
+				throw new ArgumentOutOfRangeException ("offset");
+			}
+
+			if ((count < 0) || (count > buffer.Length)) {
+				throw new ArgumentOutOfRangeException ("count");
+			}
+
 			var bytesRead = 0;
 			bool taken;
 
@@ -56,6 +64,14 @@ namespace Pipe
 
 		public override void Write (byte[] buffer, int offset, int count)
 		{
+			if ((offset < 0) || (offset >= buffer.Length)) {
+				throw new ArgumentOutOfRangeException ("offset");
+			}
+
+			if ((count < 0) || (count > buffer.Length)) {
+				throw new ArgumentOutOfRangeException ("count");
+			}
+
 			for (var index = offset; index < (offset + count); ++index) {
 				_buffer.Add (buffer [index]);
 			}

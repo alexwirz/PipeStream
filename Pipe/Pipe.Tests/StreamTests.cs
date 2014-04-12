@@ -125,6 +125,102 @@ namespace Pipe.Tests
 			Assert.AreEqual (buffer.Length, bytesRead);
 			CollectionAssert.AreEqual (buffer, readBuffer);
 		}
+
+		[Test]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void ReadThrowsArgumentOfRangeIfOffsetIsNegative ()
+		{
+			var pipeStream = new PipeStream ();
+			pipeStream.Read (new byte[10], -1, 1);
+		}
+
+		[Test]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void ReadThrowsArgumentOfRangeIfOffsetGreaterThanBufferSize ()
+		{
+			var pipeStream = new PipeStream ();
+			pipeStream.Read (new byte[10], 10, 1);
+		}
+
+		[Test]
+		public void NoBytesTakenFromStreamIfOffsetOutOfRange ()
+		{
+			var pipeStream = new PipeStream ();
+			pipeStream.Write (new byte[] { 1, 2, 3 }, 0, 3);
+			try {
+				pipeStream.Read (new byte[10], 10, 1);
+			}
+			catch (ArgumentOutOfRangeException) {
+			}
+
+			Assert.AreEqual (3, pipeStream.Length);
+		}
+
+		[Test]
+		public void NoBytesTakenFromStreamIfCountIsZero ()
+		{
+			var pipeStream = new PipeStream ();
+			pipeStream.Write (new byte[] { 1, 2, 3 }, 0, 3);
+			pipeStream.Read (new byte [1], 0, 0);
+			Assert.AreEqual (3, pipeStream.Length);
+		}
+
+		[Test]
+		public void NoBytesWrittenToStreamIfCountIsZero ()
+		{
+			var pipeStream = new PipeStream ();
+			pipeStream.Write (new byte[] { 1, 2, 3 }, 0, 0);
+			Assert.AreEqual (0, pipeStream.Length);
+		}
+
+		[Test]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void WriteThrowsArgumentOfRangeIfOffsetIsNegative ()
+		{
+			var pipeStream = new PipeStream ();
+			pipeStream.Write (new byte[10], -1, 1);
+		}
+
+		[Test]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void WriteThrowsArgumentOfRangeIfOffsetGreaterThanBufferSize ()
+		{
+			var pipeStream = new PipeStream ();
+			pipeStream.Write (new byte[10], 10, 1);
+		}
+
+		[Test]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void ReadThrowsArgumentOfRangeIfCountIsNegative ()
+		{
+			var pipeStream = new PipeStream ();
+			pipeStream.Read (new byte[10], 0, -1);
+		}
+
+		[Test]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void ReadThrowsArgumentOfRangeIfCountGreaterThanBufferSize ()
+		{
+			var pipeStream = new PipeStream ();
+			pipeStream.Flush (); // to prevent endless waiting when the test fails
+			pipeStream.Read (new byte[10], 0, 11);
+		}
+
+		[Test]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void WriteThrowsArgumentOfRangeIfCountIsNegative ()
+		{
+			var pipeStream = new PipeStream ();
+			pipeStream.Write (new byte[2] {1, 2}, 0, -1);
+		}
+
+		[Test]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void WriteThrowsArgumentOfRangeIfCountGreaterThanBufferSize ()
+		{
+			var pipeStream = new PipeStream ();
+			pipeStream.Write (new byte[2] {1, 2}, 0, 3);
+		}
 	}
 }
 
