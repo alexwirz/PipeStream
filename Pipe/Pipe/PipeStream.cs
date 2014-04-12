@@ -1,8 +1,8 @@
 ﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading;
 
 namespace Pipe
@@ -10,10 +10,6 @@ namespace Pipe
 	public class PipeStream : Stream
 	{
 		private readonly BlockingCollection<byte> _buffer = new BlockingCollection<byte> (); 
-
-		public PipeStream ()
-		{
-		}
 
 		#region implemented abstract members of Stream
 
@@ -24,13 +20,7 @@ namespace Pipe
 
 		public override int Read (byte[] buffer, int offset, int count)
 		{
-			if ((offset < 0) || (offset >= buffer.Length)) {
-				throw new ArgumentOutOfRangeException ("offset");
-			}
-
-			if ((count < 0) || (count > buffer.Length)) {
-				throw new ArgumentOutOfRangeException ("count");
-			}
+			CheckArguments (buffer, offset, count);
 
 			var bytesRead = 0;
 			bool taken;
@@ -52,6 +42,16 @@ namespace Pipe
 			return bytesRead;
 		}
 
+		private static void CheckArguments (byte[] buffer, int offset, int count)
+		{
+			if ((offset < 0) || (offset >= buffer.Length)) {
+				throw new ArgumentOutOfRangeException ("offset");
+			}
+			if ((count < 0) || (count > buffer.Length)) {
+				throw new ArgumentOutOfRangeException ("count");
+			}
+		}
+
 		public override long Seek (long offset, SeekOrigin origin)
 		{
 			throw new NotImplementedException ();
@@ -64,13 +64,7 @@ namespace Pipe
 
 		public override void Write (byte[] buffer, int offset, int count)
 		{
-			if ((offset < 0) || (offset >= buffer.Length)) {
-				throw new ArgumentOutOfRangeException ("offset");
-			}
-
-			if ((count < 0) || (count > buffer.Length)) {
-				throw new ArgumentOutOfRangeException ("count");
-			}
+			CheckArguments (buffer, offset, count);
 
 			for (var index = offset; index < (offset + count); ++index) {
 				_buffer.Add (buffer [index]);
