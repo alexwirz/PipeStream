@@ -23,20 +23,10 @@ namespace Pipe
 			CheckArguments (buffer, offset, count);
 
 			var bytesRead = 0;
-			bool taken;
-
-			for (var index = offset; index < offset + count; ++index) {
-				taken = false;
-				while (!taken) {
-					taken = _buffer.TryTake (out buffer [index]);
-					if (taken) {
-						++bytesRead;
-					}
-
-					if (!taken && _buffer.IsCompleted) {
-						return bytesRead;
-					}
-				}
+			var haveMoreBytes = true;
+			for (var index = offset; (index < offset + count) && haveMoreBytes; ++index) {
+				haveMoreBytes = TryReadNextByteIntoBuffer (buffer, index);
+				++bytesRead;
 			}
 
 			return bytesRead;
@@ -50,6 +40,19 @@ namespace Pipe
 			if ((count < 0) || (count > buffer.Length)) {
 				throw new ArgumentOutOfRangeException ("count");
 			}
+		}
+
+		private bool TryReadNextByteIntoBuffer (byte[] buffer, int index)
+		{
+			var readSucceeded = false;
+			while (!readSucceeded) {
+				readSucceeded = _buffer.TryTake (out buffer [index]);
+				if (!readSucceeded && _buffer.IsAddingCompleted) {
+					break;
+				}
+			}
+
+			return readSucceeded;
 		}
 
 		public override long Seek (long offset, SeekOrigin origin)
