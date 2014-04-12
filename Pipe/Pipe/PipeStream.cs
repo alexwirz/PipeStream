@@ -9,7 +9,16 @@ namespace Pipe
 {
 	public class PipeStream : Stream
 	{
-		private readonly BlockingCollection<byte> _buffer = new BlockingCollection<byte> (); 
+		private readonly BlockingCollection<byte> _buffer;
+
+		public PipeStream () : this (1 * 1024 * 1024)
+		{
+		}
+
+		public PipeStream (int bufferSize)
+		{
+			_buffer = new BlockingCollection<byte> (bufferSize);
+		}
 
 		#region implemented abstract members of Stream
 
